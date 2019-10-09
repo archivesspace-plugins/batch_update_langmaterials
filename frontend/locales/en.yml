@@ -1,0 +1,9 @@
+en:
+  langmaterial_job:
+    _singular: Update Default Language of Material Job
+    _plural: Update Default Language of Material Jobs
+    language: New language
+    all_repos: Globally run update for all repositories?
+  job:
+    types:
+      langmaterial_job: Update Default Language of Material Job
