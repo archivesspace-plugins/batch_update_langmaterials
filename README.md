@@ -10,15 +10,21 @@ While a controlled value **Language of Material** is optional for Archival Objec
 
 This plugin allows any user with manage_repository permissions or higher to initiate a background job that will identify Resource records lacking a required controlled value language and update only those records with a new language selected by the user.
 
+![Resource lacking a controlled value language](_README_images/MissingLang.png)
+
 ## Using the plugin
 
 After installing the plugin (see below):
 
 1.  While logged in as a repository manager or higher, create a new "Update Default Language of Material" background job.
+![Initiate background job](_README_images/1_LangMatJob.png)
 2.  Select the new controlled value language for all Resource records currently lacking a controlled value Language of Material sub-record.
+![Initiate background job](_README_images/2_LangMatJob.png)
 3.  *(Optional)* If logged in as a System Administrator, select the "Globally run update for all repositories?" checkbox if you wish to populate all Resource records currently lacking a controlled value Language of Material sub-record in every repository with the language selected in step 2.
 4.  Submit the job and wait for the job to complete.
+![Review the list of New & Modified Records](_README_images/3_LangMatJob.png)
 5.  After the job completes you may review a list of records updated as part of the background job.  (Note: If you opted to "Globally run" the background job some links in the update records section may lead to "Resource Not Found" pages as those links point to a repository other than the one you are currently logged in to.)
+![Now a language is present](_README_images/4_LangMatJob.png)
 
 ## To install:
 
