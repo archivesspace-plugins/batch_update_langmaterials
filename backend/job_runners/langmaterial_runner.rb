@@ -21,6 +21,7 @@ class LangMaterialRunner < JobRunner
       rescue JSON::ParserError
         params = {}
       end
+      
       params[:language] = job_data['language']
       params[:all_repos] = job_data['all_repos']
 
@@ -28,31 +29,13 @@ class LangMaterialRunner < JobRunner
 
       DB.open do |db|
 
-        def query_string(params)
-          "SELECT
-              id, repo_id
-          FROM
-              as_126.resource
-          WHERE
-              id NOT IN (SELECT
-                      resource_id
-                  FROM
-                      as_126.lang_material
-                  WHERE
-                      id IN (SELECT
-                              lang_material_id
-                          FROM
-                              as_126.language_and_script)
-                          AND resource_id IS NOT NULL)
-                  #{params[:all_repos] == true ? "" : "AND repo_id = #{@job.repo_id}"};"
-        end
-
         unless params[:language].nil?
-          # no_langmaterial = db[:resource].left_join(:lang_material, resource_id: :id).where(resource_id: nil).all
           lang_enum = db[:enumeration].filter(:name => 'language_iso639_2').select(:id)
           new_lang = db[:enumeration_value].filter(:value => params[:language], :enumeration_id => lang_enum ).select(:id)
-          no_lang = db.fetch(query_string(params))
-          no_lang.each do |resource|
+          l_and_s = db[:language_and_script].select(:lang_material_id)
+          lang_mat = db[:lang_material].select(:resource_id).where(id: l_and_s, resource_id: !nil)
+          resources_no_lang = params[:all_repos] == true ? db[:resource].exclude(id: lang_mat) : db[:resource].exclude(id: lang_mat).where(repo_id: @job.repo_id)
+          resources_no_lang.each do |resource|
 
             # Create lang_material record attached to resource
             language_record = db[:lang_material].insert(
@@ -101,7 +84,7 @@ class LangMaterialRunner < JobRunner
 
       ensure
         @job.write_output("Done.")
-        
+
     end
 
   end
